@@ -28,6 +28,7 @@ Setup Tools
 
 ```shell
 git clone https://github.com/tkilloren/vagrant_openshift.git
+cd vagrant_openshift
 ```
 
 ### Install Ansible on the WorkStation
@@ -57,8 +58,10 @@ You will need to run the following when opening a new shell for running ansible:
 mkdir -p installers/github
 cd installers/github
 git clone https://github.com/openshift/openshift-ansible.git
+cd openshift-ansible
 git fetch origin
 git checkout release-3.10
+cd ../../..
 ```
 
 
