@@ -1,0 +1,5 @@
+#========================================
+# Python requirements for:
+# * the Vagrant dynamic inventory script
+#========================================
+paramiko

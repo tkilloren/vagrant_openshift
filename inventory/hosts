@@ -1,0 +1,31 @@
+[OSEv3:vars]
+# We will log in as the vagrant user and become root
+ansible_become=true
+## FIXME: Logic to set to 'openshift-enterprise'
+openshift_deployment_type=origin
+openshift_portal_net=100.78.0.0/19
+osm_cluster_network_cidr=100.64.0.0/16
+openshift_master_default_subdomain=openshift.vbox
+openshift_master_cluster_public_hostname=192.168.33.71
+# Workstations are tight on resources; squeeze it in anyway
+openshift_disable_check=disk_availability,memory_availability
+
+[OSEv3:children]
+nodes
+
+[nodes:children]
+masters
+infra
+app
+
+[etcd]
+master-1 openshift_schedulable=True
+
+[masters]
+master-1
+
+[infra]
+infra-1
+
+[app]
+app-1
