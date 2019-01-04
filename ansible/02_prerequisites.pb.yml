@@ -1,0 +1,2 @@
+# Shim playbook to point to proper playbook
+- import_playbook: ../installers/github/openshift-ansible/playbooks/prerequisites.yml

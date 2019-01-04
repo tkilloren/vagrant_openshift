@@ -1,0 +1,25 @@
+---
+- name: Prepare vagrant boxes for OpenShift install
+  hosts: nodes
+  become: true
+  #  vars_files:
+  # - secrets/redhat-subscription.yml
+
+  tasks:
+  - name: Replace hosts
+    action: template src=templates/hosts.j2 dest=/etc/hosts
+
+  - name: Add RPM Repositories
+    yum:
+      name:
+      - centos-release-openshift-origin39
+#      - epel-release
+      state: present
+
+#  - name: Install prerequisite RPMs
+#    yum:
+#      name:
+#      - ansible
+#      - docker
+#      - firewalld
+#      state: present

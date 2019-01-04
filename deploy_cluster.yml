@@ -1,1 +1,0 @@
-- import_playbook: ./installers/github/openshift-ansible/playbooks/deploy_cluster.yml

@@ -60,7 +60,7 @@ cd installers/github
 git clone https://github.com/openshift/openshift-ansible.git
 cd openshift-ansible
 git fetch origin
-git checkout release-3.10
+git checkout release-3.9
 cd ../../..
 ```
 
@@ -74,16 +74,22 @@ Run the Cluster Install
 vagrant up
 ```
 
+### Run the Setup_VBox_Machines playbook
+
+```shell
+ansible-playbook 01_setup_vbox_machines.pb.yml
+```
+
 ### Run the Prerequisite playbook
 
 ```shell
-ansible-playbook prerequisites.yml
+ansible-playbook 02_prerequisites.pb.yml
 ```
 
 ### Run the Deploy_Cluster playbook
 
 ```shell
-ansible-playbook deploy_cluster.yml
+ansible-playbook 03_deploy_cluster.pb.yml
 ```
 
 

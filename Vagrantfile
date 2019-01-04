@@ -15,16 +15,16 @@ OPENSHIFT_RELEASE = "3.9"
 virtual_machines = [
   { :name => "master-1",
     :cpus => "1",
-    :memory => "2048",
-    :private_ip => "192.168.33.71" },
+    :memory => "4096",
+    :private_ip => "192.168.33.11" },
+  { :name => "infra-1",
+    :cpus => "1",
+    :memory => "4096",
+    :private_ip => "192.168.33.21" },
   { :name => "app-1",
     :cpus => "1",
     :memory => "2048",
-    :private_ip => "192.168.33.72" },
-  { :name => "infra-1",
-    :cpus => "1",
-    :memory => "4048",
-    :private_ip => "192.168.33.73" }
+    :private_ip => "192.168.33.31" }
 ]
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|

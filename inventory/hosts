@@ -1,12 +1,18 @@
 [OSEv3:vars]
 # We will log in as the vagrant user and become root
 ansible_become=true
+debug_level=6
+#os_firewall_use_firewalld=true
 ## FIXME: Logic to set to 'openshift-enterprise'
 openshift_deployment_type=origin
+openshift_pkg_version='-3.9.0'
+# Private IP Ranges from rfc6598 (Carrier Grade NAT)
 openshift_portal_net=100.78.0.0/19
 osm_cluster_network_cidr=100.64.0.0/16
+# Use eth1 for SDN traffic use 'openshift_ip' to find network device
+openshift_set_node_ip=true
 openshift_master_default_subdomain=openshift.vbox
-openshift_master_cluster_public_hostname=192.168.33.71
+openshift_master_cluster_public_hostname=192.168.33.11
 # Workstations are tight on resources; squeeze it in anyway
 openshift_disable_check=disk_availability,memory_availability
 
@@ -19,13 +25,14 @@ infra
 app
 
 [etcd]
+# Setting master as schedulable is necessary prior to v3.9
 master-1 openshift_schedulable=True
 
 [masters]
-master-1
+master-1 openshift_ip='192.168.33.11'
 
 [infra]
-infra-1
+infra-1 openshift_ip='192.168.33.21' openshift_node_labels="{'region': 'infra'}"
 
 [app]
-app-1
+app-1 openshift_ip='192.168.33.31'
