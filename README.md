@@ -13,12 +13,12 @@ Minishift and minikube are easy ways to spin up a simple cluster but are already
 Prereqs
 -------
 
-Sorry, only Mac instructions for now.
+Sorry, only Mac instructions for now (although Linux should only be a small leap).
 
 You will need the following installed on your Mac.
-* VirtualBox
-* Vagrant
-* Homebrew
+* [VirtualBox](https://www.virtualbox.org)
+* [Vagrant](https://www.vagrantup.com)
+* [Homebrew](https://brew.sh)
 
 
 Setup Tools
