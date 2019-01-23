@@ -2,10 +2,8 @@
 # We will log in as the vagrant user and become root
 ansible_become=true
 debug_level=6
-#os_firewall_use_firewalld=true
 ## FIXME: Logic to set to 'openshift-enterprise'
 openshift_deployment_type=origin
-openshift_pkg_version='-3.9.0'
 # Private IP Ranges from rfc6598 (Carrier Grade NAT)
 openshift_portal_net=100.78.0.0/19
 osm_cluster_network_cidr=100.64.0.0/16
@@ -22,17 +20,17 @@ nodes
 [nodes:children]
 masters
 infra
-app
+compute
 
 [etcd]
 # Setting master as schedulable is necessary prior to v3.9
 master-1 openshift_schedulable=True
 
 [masters]
-master-1 openshift_ip='192.168.33.11'
+master-1 openshift_ip='192.168.33.11' openshift_node_group_name='node-config-master'
 
 [infra]
-infra-1 openshift_ip='192.168.33.21' openshift_node_labels="{'region': 'infra'}"
+infra-1 openshift_ip='192.168.33.21' openshift_node_group_name='node-config-infra'
 
-[app]
-app-1 openshift_ip='192.168.33.31'
+[compute]
+app-1 openshift_ip='192.168.33.31' openshift_node_group_name='node-config-compute'

@@ -42,7 +42,7 @@ brew install ansible
 Run one time:
 ```shell
 pip install virtualenv
-virtualenv venv
+virtualenv --python=/usr/bin/python venv
 . venv/bin/activate
 pip install -r requirements.txt
 ```
@@ -68,39 +68,33 @@ cd ../../..
 Run the Cluster Install
 -----------------------
 
-### Build the virtual hardware
+### Build the cluster
 
 ```shell
-vagrant up
+./build_cluster.sh
 ```
-
-### Run the Setup_VBox_Machines playbook
-
-```shell
-ansible-playbook 01_setup_vbox_machines.pb.yml
-```
-
-### Run the Prerequisite playbook
-
-```shell
-ansible-playbook 02_prerequisites.pb.yml
-```
-
-### Run the Deploy_Cluster playbook
-
-```shell
-ansible-playbook 03_deploy_cluster.pb.yml
-```
-
 
 Using Cluster
 ------------
 
-### Connecting to a node
+### Listing VMs
+```shell
+vagrant status
+```
+
+
+### Logging on to a VM and become root
 
 ```shell
 vagrant ssh master-1
 sudo -i
+```
+
+### Running OC client against cluster
+
+Download the cli tool:
+```shell
+brew install openshift-cli
 ```
 
 Clean up

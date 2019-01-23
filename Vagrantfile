@@ -2,15 +2,36 @@
 # vi: set ft=ruby :
 VAGRANTFILE_API_VERSION = "2"
 
-## FIXME: logic to set to "generic/rhel7" when doing enterprise install
-VAGRANTBOX = "generic/centos7"
-OPENSHIFT_RELEASE = "3.9"
+#=========================
+# Parameters
+#=========================
+openshift_release = ENV["OPENSHIFT_RELEASE"] || "3.11"
+openshift_deployment_type = ENV["OPENSHIFT_DEPLOYMENT_TYPE"] || "origin"
+
+
+#=========================
+# Deployment Type Settings
+#=========================
+case openshift_deployment_type
+when "origin"
+  deploy_name = "okd"
+  vagrantbox = "generic/centos7"
+when "openshift-enterprise"
+  deploy_name = "osp"
+  vagrantbox = "generic/rhel7"
+else
+  puts 'Unknown value for OPENSHIFT_DEPLOYMENT_TYPE'
+  puts 'should be one of the following values:'
+  puts 'origin'
+  puts 'openshift-enterprise'
+  exit 1
+end
+
 
 #=========================
 # Define Virtual Machines
 #  Memory is in megabytes
 #=========================
-
 ## FIXME: Add logic for port forwarding
 virtual_machines = [
   { :name => "master-1",
@@ -28,7 +49,7 @@ virtual_machines = [
 ]
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
-  config.vm.box = VAGRANTBOX
+  config.vm.box = vagrantbox
 
   # Setup some defaults
   config.vm.provider :virtualbox do |default|
@@ -50,7 +71,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
         vb.customize ["modifyvm", :id, "--ioapic", "on"]
         vb.customize ["modifyvm", :id, "--memory", opts[:memory]]
         # Use more verbose name for displaying in VirtualBox
-        vb.customize ["modifyvm", :id, "--name", "OCP #{OPENSHIFT_RELEASE} #{opts[:name]}"]
+        vb.customize ["modifyvm", :id, "--name", "#{deploy_name} #{openshift_release} #{opts[:name]}"]
       end
 
     end

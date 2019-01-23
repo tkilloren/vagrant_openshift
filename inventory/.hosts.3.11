@@ -1,0 +1,56 @@
+[OSEv3:vars]
+# We will log in as the vagrant user and become root
+ansible_become=true
+debug_level=6
+## FIXME: Logic to set to 'openshift-enterprise'
+openshift_deployment_type=origin
+#openshift_deployment_type=openshift-enterprise
+# Private IP Ranges from rfc6598 (Carrier Grade NAT)
+openshift_portal_net=100.78.0.0/19
+osm_cluster_network_cidr=100.64.0.0/16
+# Use eth1 for SDN traffic use 'openshift_ip' to find network device
+openshift_set_node_ip=true
+openshift_master_default_subdomain=openshift.vbox
+openshift_master_cluster_public_hostname=192.168.33.11
+# Workstations are tight on resources; squeeze it in anyway
+openshift_disable_check=disk_availability,memory_availability
+
+# Required when doing 'openshift-enterprise' deployment
+# Set to RH credentials to grab official containers
+# from registry.redhat.io.
+# See https://access.redhat.com/solutions/3661111
+#oreg_auth_user=RH_USER
+#oreg_auth_password=RH_PASS
+
+
+[OSEv3:children]
+nodes
+
+[nodes:children]
+masters
+infra
+compute
+
+[etcd]
+master-1
+
+
+[masters]
+master-1 openshift_ip='192.168.33.11'
+
+[masters:vars]
+openshift_node_group_name='node-config-master'
+
+
+[infra]
+infra-1 openshift_ip='192.168.33.21'
+
+[infra:vars]
+openshift_node_group_name='node-config-infra'
+
+
+[compute]
+app-1 openshift_ip='192.168.33.31'
+
+[compute:vars]
+openshift_node_group_name='node-config-compute'

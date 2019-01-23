@@ -2,18 +2,21 @@
 - name: Prepare vagrant boxes for OpenShift install
   hosts: nodes
   become: true
-  #  vars_files:
-  # - secrets/redhat-subscription.yml
+  vars:
+  - okd_repo_rpm: centos-release-openshift-origin311
+  vars_files:
+  - ../secrets/redhat_subscription.yml
+
 
   tasks:
+  # We don't have dns so lets setup /etc/hosts
   - name: Replace hosts
     action: template src=templates/hosts.j2 dest=/etc/hosts
 
   - name: Add RPM Repositories
     yum:
       name:
-      - centos-release-openshift-origin39
-#      - epel-release
+      - "{{okd_repo_rpm}}"
       state: present
 
 #  - name: Install prerequisite RPMs
@@ -23,3 +26,29 @@
 #      - docker
 #      - firewalld
 #      state: present
+
+#
+# Add enterprise repos
+#
+#  - name: Register nodes with subscription-manager
+#    redhat_subscription:
+#      username: "{{ redhat_subscription_username }}"
+#      password: "{{ redhat_subscription_password }}"
+#      pool_ids: "{{ redhat_subscription_pools }}"
+#    register: redhat_subscribe_system
+
+#  - name: Disable all RHSM repositories
+#    rhsm_repository:
+#      name: '*'
+#      state: disabled
+
+#  - name: Set yum repositories
+#    rhsm_repository:
+#      name: "{{ item }}"
+#    with_items:
+#      - rhel-7-server-rpms
+#      - rhel-7-server-extras-rpms
+#      - rhel-7-server-optional-rpms
+#      - rhel-7-fast-datapath-rpms
+#      - rhel-7-server-ose-3.11-rpms
+#      when: redhat_subscribe_system.change
