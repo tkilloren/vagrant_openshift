@@ -92,7 +92,7 @@ sudo -i
 
 ### Connecting to web console
 
-Use browser to connect to https://ocp.192.168.33.11.nip.io
+Use browser to connect to https://ocp.192.168.33.11.nip.io:8443
 
 The default username:password is <code>system:admin</code>
 
