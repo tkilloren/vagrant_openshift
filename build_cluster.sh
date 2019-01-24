@@ -7,7 +7,7 @@
 #=============================================================
 #FIXME - Add as commandline parameters
 OPENSHIFT_RELEASE_MAJOR='3'
-OPENSHIFT_RELEASE_MINOR='6'
+OPENSHIFT_RELEASE_MINOR='10'
 OPENSHIFT_DEPLOYMENT_TYPE="origin"
 #OPENSHIFT_DEPLOYMENT_TYPE="openshift-enterprise"
 

@@ -90,12 +90,27 @@ vagrant ssh master-1
 sudo -i
 ```
 
+### Connecting to web console
+
+Use browser to connect to https://ocp.192.168.33.11.nip.io
+
+The default username:password is <code>system:admin</code>
+
 ### Running OC client against cluster
 
 Download the cli tool:
 ```shell
 brew install openshift-cli
 ```
+
+### Connect to OpenShift router
+
+Use browser to connect to https://apps.192.168.33.21.nip.io
+
+example:
+
+https://myapp.apps.192.168.33.21.nip.io
+
 
 Clean up
 --------
