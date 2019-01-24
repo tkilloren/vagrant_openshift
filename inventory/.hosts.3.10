@@ -1,3 +1,4 @@
+#OpenShift 3.10
 [OSEv3:vars]
 # We will log in as the vagrant user and become root
 ansible_become=true
