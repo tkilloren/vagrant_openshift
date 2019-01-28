@@ -1,0 +1,15 @@
+---
+- name: Prepare vagrant boxes for OpenShift install
+  hosts: nodes
+  become: true
+  vars:
+  - release_major: 3
+  - release_minor: 11
+
+
+  tasks:
+  - name: Add RPM Repositories
+    yum:
+      name:
+      - "centos-release-openshift-origin{{ release_major }}{{ release_minor }}"
+      state: present

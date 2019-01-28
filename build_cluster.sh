@@ -5,20 +5,69 @@
 # This shell script orchestrates building OpenShift on
 # VirtualBox.
 #=============================================================
-#FIXME - Add as commandline parameters
-OPENSHIFT_RELEASE_MAJOR='3'
-OPENSHIFT_RELEASE_MINOR='10'
-OPENSHIFT_DEPLOYMENT_TYPE="origin"
-#OPENSHIFT_DEPLOYMENT_TYPE="openshift-enterprise"
 
+#============
+# Functions
+#============
+usage()
+{
+  echo "Usage:" >&2
+  echo "  $0 [ehv?] [ -m OPENSHIFT_MINOR_VERSION  ]" >&2
+  exit 2
+}
+
+#============
+# Parse CLI
+#============
+
+#
+# Defaults
+#
+unset verbose
+openshift_release_major='3'
+openshift_release_minor='11'
+openshift_deployment_type='origin'
+
+#
+# Parse
+#
+while getopts 'vem:?h' opt
+do
+  case "$opt" in
+    v)  verbose=true;;
+    m)  openshift_release_minor="$OPTARG";;
+    e)  openshift_deployment_type='openshift-enterprise';;
+    h|?) usage;;
+  esac
+done
+shift `expr $OPTIND - 1`
+
+# Only valid major is 3 for now
+# ansible_flags="${ansible_flags} -e release_major=${openshift_release_major}"
+ansible_flags="${ansible_flags} -e release_minor=${openshift_release_minor}"
+
+if [ "${openshift_deployment_type}" = 'openshift-enterprise' ]; then
+  ansible_flags="${ansible_flags} -e openshift_deployment_type=openshift-enterprise"
+fi
+
+if [ "$verbose" ]; then
+  ansible_flags="${ansible_flags} -vvv"
+fi
 
 #
 # Some shortcuts for the various versioning formats
 #
-release_dot="${OPENSHIFT_RELEASE_MAJOR}.${OPENSHIFT_RELEASE_MINOR}"
-release_short="${OPENSHIFT_RELEASE_MAJOR}${OPENSHIFT_RELEASE_MINOR}"
+release_dot="${openshift_release_major}.${openshift_release_minor}"
+release_short="${openshift_release_major}${openshift_release_minor}"
 
 
+#============
+# Main ()
+#============
+
+#------------------------------------
+# 0) Setup deploy environment
+#------------------------------------
 #
 #Point to proper version of ansible hosts file
 #FIXME - Once more versions work find generalization about hosts
@@ -36,10 +85,10 @@ echo
 #------------------------------------
 # 1) Build the virtual hardware with Vagrant
 #------------------------------------
-echo "* Run Vagrant for ${OPENSHIFT_DEPLOYMENT_TYPE} deployment"
+echo "* Run Vagrant for ${openshift_deployment_type} deployment"
 
 OPENSHIFT_RELEASE="${release_dot}" \
-OPENSHIFT_DEPLOYMENT_TYPE="${OPENSHIFT_DEPLOYMENT_TYPE}" \
+OPENSHIFT_DEPLOYMENT_TYPE="${openshift_deployment_type}" \
 vagrant up
 
 echo
@@ -52,8 +101,7 @@ echo
 #------------------------------------
 echo "* Prepare VMs for OpenShift ${release_dot} deployer"
 
-ansible-playbook ansible/01_setup_vbox_machines.pb.yml \
-  -e "okd_repo_rpm=centos-release-openshift-origin${release_short}"
+ansible-playbook ansible/01_setup_vbox_machines.pb.yml ${ansible_flags}
 
 echo
 
@@ -77,7 +125,7 @@ if [ "${install_root}" = 'installers/github' ]; then
 fi
 
 # Pick the proper play naming layout based on version
-if [ "$OPENSHIFT_RELEASE_MINOR" -le 7 ]; then
+if [ "$openshift_release_minor" -le 7 ]; then
   plays="${install_root}/openshift-ansible/playbooks/byo/config.yml"
 else
   plays="${install_root}/openshift-ansible/playbooks/prerequisites.yml
@@ -87,5 +135,5 @@ fi
 # Run the advanced deployment playbook
 echo "* Run advanced deployment for OpenShift ${release_dot}"
 for play in ${plays}; do
-  ansible-playbook -vvv "${play}"
+  ansible-playbook "${play}" ${ansible_flags}
 done
