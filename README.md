@@ -59,8 +59,7 @@ mkdir -p installers/github
 cd installers/github
 git clone https://github.com/openshift/openshift-ansible.git
 cd openshift-ansible
-git fetch origin
-git checkout release-3.9
+git fetch origin --all
 cd ../../..
 ```
 

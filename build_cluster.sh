@@ -9,11 +9,22 @@
 #============
 # Functions
 #============
-usage()
+print_usage()
 {
   echo "Usage:" >&2
   echo "  $0 [ehv?] [ -m OPENSHIFT_MINOR_VERSION  ]" >&2
   exit 2
+}
+
+print_tool_versions()
+{
+  echo 'Software Versions:'
+  git --version
+  vagrant --version
+  echo "VirtualBox $(VBoxManage --version)"
+  python --version
+  ansible --version
+  echo
 }
 
 #============
@@ -21,7 +32,7 @@ usage()
 #============
 
 #
-# Defaults
+# Default values
 #
 unset verbose
 openshift_release_major='3'
@@ -37,7 +48,7 @@ do
     v)  verbose=true;;
     m)  openshift_release_minor="$OPTARG";;
     e)  openshift_deployment_type='openshift-enterprise';;
-    h|?) usage;;
+    h|?) print_usage;;
   esac
 done
 shift `expr $OPTIND - 1`
@@ -52,6 +63,49 @@ fi
 
 if [ "$verbose" ]; then
   ansible_flags="${ansible_flags} -vvv"
+  print_tool_versions
+fi
+
+#
+# Validate Parameters
+#
+
+if ! command -v git ; then
+  echo "ERROR: The 'git' cli command must be installed and in the PATH" >&2
+  exit 2
+fi
+
+if ! command -v vagrant; then
+  echo "ERROR: The 'vagrant' cli command must be installed and in the PATH" >&2
+  exit 2
+fi
+
+if ! command -v python; then
+  echo "ERROR: The 'python' cli command must be installed and in the PATH" >&2
+  exit 2
+fi
+
+if ! command -v ansible-playbook; then
+  echo "ERROR: The 'ansible-playbook' cli command must be installed and in the PATH" >&2
+  exit 2
+fi
+
+# Check major
+if [ ! "${openshift_release_major}" -eq 3 ]; then
+  echo "ERROR: Invalid Major Release - ${openshift_release_major}" >&2
+  echo " This project currently only supports OpenShift 3.X" >&2
+  exit 2
+fi
+
+# Check minor
+if [ "${openshift_release_major}" -eq 3 ]; then
+  if [ "${openshift_release_minor}" -eq 8 ] ||
+     [ "${openshift_release_minor}" -lt 6 ] ||
+     [ "${openshift_release_minor}" -gt 11 ]; then
+    echo "ERROR: Invalid Minor Release - ${openshift_release_minor}" >&2
+    echo " 3.X can only be 6,7,9,10,11" >&2
+    exit 2
+  fi
 fi
 
 #
